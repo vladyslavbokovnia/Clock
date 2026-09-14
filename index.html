@@ -11,15 +11,15 @@
     html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #090708; }
     body { display: grid; place-items: center; font-family: Georgia, 'Times New Roman', serif; }
     .wallpaper { position: relative; width: 100vw; height: 100vh; overflow: hidden; background: #110609; }
-    .wallpaper::before { content: ''; position: absolute; inset: 0; background: url('./assets/clock-background.png') center / cover no-repeat; filter: saturate(.96) contrast(1.05); }
+    .wallpaper::before { content: ''; position: absolute; inset: 0; background: #110609; }
     .wallpaper::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,.28) 100%); pointer-events: none; }
     svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
     .dial { fill: rgba(7, 5, 4, .46); stroke: rgba(240, 195, 84, .82); stroke-width: .75; filter: drop-shadow(0 1px 2px #000); }
-    .track { fill: none; stroke: rgba(255, 218, 116, .24); stroke-width: 1.15; }
-    .progress { fill: none; stroke: #ffe17b; stroke-width: 1.45; stroke-linecap: round; filter: drop-shadow(0 0 1px #ffb900); }
-    .tick { stroke: rgba(255, 224, 129, .9); stroke-width: .42; }
-    .label { fill: #ffe595; font-size: 3.1px; text-anchor: middle; dominant-baseline: middle; letter-spacing: .28px; paint-order: stroke; stroke: #3a1a09; stroke-width: .55px; }
-    .minor { fill: #f6d77c; font-size: 2.25px; text-anchor: middle; dominant-baseline: middle; letter-spacing: .12px; }
+    .track { fill: none; stroke: rgba(255, 218, 116, .13); stroke-width: .45; }
+    .progress { display: none; }
+    .tick { display: none; }
+    .label { fill: rgba(255, 229, 149, .72); font-size: 2.1px; text-anchor: middle; dominant-baseline: middle; letter-spacing: .28px; }
+    .minor { display: none; }
     .hand { stroke: #ffe18a; stroke-linecap: round; filter: drop-shadow(0 1px 1px #160501); }
     .needle { stroke: #fff0a4; stroke-width: .55; stroke-linecap: round; }
     .hub { fill: #ffdf72; stroke: #5d2e0c; stroke-width: .45; }
@@ -28,7 +28,8 @@
   </style>
 </head>
 <body>
-  <main class="wallpaper" aria-label="Механическая заставка часов">
+    <main class="wallpaper" aria-label="Механическая заставка часов">
+    <img src="./assets/clock-background.png" alt="" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.96) contrast(1.05);" />
     <svg viewBox="0 0 100 166.6" role="img" aria-label="Часы, заряд батареи, день недели и месяц">
       <defs>
         <linearGradient id="gold" x1="0" x2="1"><stop stop-color="#8d4b12"/><stop offset=".45" stop-color="#ffe792"/><stop offset="1" stop-color="#9a5713"/></linearGradient>
