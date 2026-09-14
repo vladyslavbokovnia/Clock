@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#090708" />
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>Clock — mechanical wallpaper</title>
   <style>
     :root { color-scheme: dark; }
@@ -14,8 +18,8 @@
     .wallpaper::before { content: ''; position: absolute; inset: 0; background: #110609; z-index: 0; }
     .wallpaper::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,.28) 100%); pointer-events: none; }
     svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; z-index: 1; }
-    .hand { stroke: #ffe18a; stroke-linecap: round; filter: drop-shadow(0 1px 1px #160501); }
-    .needle { stroke: #fff0a4; stroke-width: .72; stroke-linecap: round; filter: drop-shadow(0 1px 1px #160501); }
+    .hand { fill: #ffe18a; stroke: #4a2007; stroke-width: .38; stroke-linejoin: round; filter: drop-shadow(0 1px 1px #160501); }
+    .needle { stroke: #ffe18a; stroke-width: 1.35; stroke-linecap: round; filter: drop-shadow(0 1px 1px #160501); }
     .hub { fill: #ffdf72; stroke: #5d2e0c; stroke-width: .45; }
   </style>
 </head>
@@ -54,10 +58,10 @@
       const sec = now.getSeconds() + now.getMilliseconds()/1000, min = now.getMinutes()+sec/60, hour=(now.getHours()%12)+min/60;
       const day = now.getDay(), dayProgress = (day + now.getHours()/24 + now.getMinutes()/1440)/7;
       const yearStart = new Date(now.getFullYear(),0,1), month = now.getMonth(), yearProgress=(month + now.getDate()/new Date(now.getFullYear(),month+1,0).getDate())/12;
-      const cx=50,cy=35, hA=hour*30, mA=min*6;
-      const [hx,hy]=polar(cx,cy,12.5,hA), [mx,my]=polar(cx,cy,18.5,mA);
-      make('line',{x1:cx,y1:cy,x2:hx,y2:hy,class:'hand','stroke-width':1.5},hands); make('line',{x1:cx,y1:cy,x2:mx,y2:my,class:'hand','stroke-width':.8},hands); make('circle',{cx,cy,r:1.5,class:'hub'},hands);
-      const drawNeedle = (cx, cy, angle, length) => { const [tx,ty]=polar(cx,cy,length,angle), [bx,by]=polar(cx,cy,2.1,angle+180); make('line',{x1:bx,y1:by,x2:tx,y2:ty,class:'needle'},hands); make('circle',{cx,cy,r:.75,class:'hub'},hands); };
+      const cx=50,cy=83.3, hA=hour*30, mA=min*6;
+      const drawHand = (cx, cy, angle, length, width, reverse = 3) => { const [tipX,tipY]=polar(cx,cy,length,angle), [baseX,baseY]=polar(cx,cy,reverse,angle+180); const [leftX,leftY]=polar(cx,cy,width,angle-90), [rightX,rightY]=polar(cx,cy,width,angle+90); make('path',{d:`M ${baseX} ${baseY} L ${leftX} ${leftY} L ${tipX} ${tipY} L ${rightX} ${rightY} Z`,class:'hand'},hands); };
+      drawHand(cx,cy,hA,12.5,1.25,3.2); drawHand(cx,cy,mA,18.5,.8,3.2); make('circle',{cx,cy,r:2.2,class:'hub'},hands); make('circle',{cx,cy,r:.75,fill:'#fff0a4'},hands);
+      const drawNeedle = (cx, cy, angle, length) => { const [tx,ty]=polar(cx,cy,length,angle), [bx,by]=polar(cx,cy,2.1,angle+180); make('line',{x1:bx,y1:by,x2:tx,y2:ty,class:'needle'},hands); make('circle',{cx,cy,r:1.05,class:'hub'},hands); };
       drawNeedle(50,35,(batteryLevel ?? .75)*360,14.4);
       drawNeedle(28,77,dayProgress*360,10.2);
       drawNeedle(50,127,yearProgress*360,14.4);
@@ -65,6 +69,7 @@
     render();
     if (navigator.getBattery) navigator.getBattery().then(b => { const update=()=>render(new Date(), b.level); update(); b.addEventListener('levelchange', update); });
     setInterval(()=>render(new Date()), 1000);
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
   </script>
 <script id="background-fallback">
     (() => {

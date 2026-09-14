@@ -1,0 +1,11 @@
+{
+  "name": "Clock Mechanical Wallpaper",
+  "short_name": "Clock",
+  "description": "Полноэкранные механические часы с декоративными стрелками",
+  "start_url": "./index.html",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#090708",
+  "theme_color": "#090708",
+  "icons": []
+}
