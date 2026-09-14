@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#090708" />
+  <title>Clock — mechanical wallpaper</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #090708; }
+    body { display: grid; place-items: center; font-family: Georgia, 'Times New Roman', serif; }
+    .wallpaper { position: relative; width: 100vw; height: 100vh; overflow: hidden; background: #110609; }
+    .wallpaper::before { content: ''; position: absolute; inset: 0; background: url('./assets/clock-background.png') center / cover no-repeat; filter: saturate(.96) contrast(1.05); }
+    .wallpaper::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,.28) 100%); pointer-events: none; }
+    svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+    .dial { fill: rgba(7, 5, 4, .46); stroke: rgba(240, 195, 84, .82); stroke-width: .75; filter: drop-shadow(0 1px 2px #000); }
+    .track { fill: none; stroke: rgba(255, 218, 116, .24); stroke-width: 1.15; }
+    .progress { fill: none; stroke: #ffe17b; stroke-width: 1.45; stroke-linecap: round; filter: drop-shadow(0 0 1px #ffb900); }
+    .tick { stroke: rgba(255, 224, 129, .9); stroke-width: .42; }
+    .label { fill: #ffe595; font-size: 3.1px; text-anchor: middle; dominant-baseline: middle; letter-spacing: .28px; paint-order: stroke; stroke: #3a1a09; stroke-width: .55px; }
+    .minor { fill: #f6d77c; font-size: 2.25px; text-anchor: middle; dominant-baseline: middle; letter-spacing: .12px; }
+    .hand { stroke: #ffe18a; stroke-linecap: round; filter: drop-shadow(0 1px 1px #160501); }
+    .needle { stroke: #fff0a4; stroke-width: .55; stroke-linecap: round; }
+    .hub { fill: #ffdf72; stroke: #5d2e0c; stroke-width: .45; }
+    .legend { fill: rgba(255,222,126,.82); font-size: 1.85px; letter-spacing: .35px; text-anchor: middle; }
+    .subtle { fill: rgba(255,232,159,.65); font-size: 1.55px; text-anchor: middle; letter-spacing: .2px; }
+  </style>
+</head>
+<body>
+  <main class="wallpaper" aria-label="Механическая заставка часов">
+    <svg viewBox="0 0 100 166.6" role="img" aria-label="Часы, заряд батареи, день недели и месяц">
+      <defs>
+        <linearGradient id="gold" x1="0" x2="1"><stop stop-color="#8d4b12"/><stop offset=".45" stop-color="#ffe792"/><stop offset="1" stop-color="#9a5713"/></linearGradient>
+      </defs>
+      <g id="batteryDial"></g>
+      <g id="weekDial"></g>
+      <g id="yearDial"></g>
+      <g id="clockHands"></g>
+    </svg>
+  </main>
+  <script>
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = document.querySelector('svg');
+    const make = (tag, attrs = {}, parent = svg) => { const el = document.createElementNS(NS, tag); Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k,v)); parent.appendChild(el); return el; };
+    const polar = (cx, cy, r, angle) => { const a = (angle - 90) * Math.PI / 180; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; };
+    const arc = (cx, cy, r, start, end) => { const [x1,y1] = polar(cx,cy,r,start), [x2,y2] = polar(cx,cy,r,end); return `M ${x1} ${y1} A ${r} ${r} 0 ${(end-start)>180?1:0} 1 ${x2} ${y2}`; };
+    const ring = (group, cx, cy, r, title, units, value, start = 0, sweep = 360) => {
+      make('circle', {cx, cy, r: r+2.2, class:'dial'}, group); make('circle',{cx,cy,r,class:'track'},group);
+      const p = Math.max(0.003, Math.min(1, value));
+      make('path',{d:arc(cx,cy,r,start,start+sweep*p),class:'progress'},group);
+      make('text',{x:cx,y:cy-r-3.7,class:'label'},group).textContent=title;
+      units.forEach((u,i)=>{ const a=start+(i/units.length)*sweep; const [x,y]=polar(cx,cy,r+3.2,a); make('text',{x,y,class:'minor'},group).textContent=u; });
+      for(let i=0;i<units.length*4;i++){ const a=start+(i/(units.length*4))*sweep; const [x1,y1]=polar(cx,cy,r-1.6,a),[x2,y2]=polar(cx,cy,r+1.1,a); make('line',{x1,y1,x2,y2,class:'tick'},group); }
+      const [nx,ny]=polar(cx,cy,r+1.5,start+sweep*p); const [bx,by]=polar(cx,cy,r-2,start+sweep*p+180);
+      make('line',{x1:bx,y1:by,x2:nx,y2:ny,class:'needle'},group); make('circle',{cx:nx,cy:ny,r:.85,class:'hub'},group);
+    };
+    const battery = document.getElementById('batteryDial'), week = document.getElementById('weekDial'), year = document.getElementById('yearDial'), hands = document.getElementById('clockHands');
+    function render(now = new Date(), batteryLevel = null) {
+      [battery,week,year,hands].forEach(g=>g.replaceChildren());
+      const sec = now.getSeconds() + now.getMilliseconds()/1000, min = now.getMinutes()+sec/60, hour=(now.getHours()%12)+min/60;
+      const day = now.getDay(), dayProgress = (day + now.getHours()/24 + now.getMinutes()/1440)/7;
+      const yearStart = new Date(now.getFullYear(),0,1), month = now.getMonth(), yearProgress=(month + now.getDate()/new Date(now.getFullYear(),month+1,0).getDate())/12;
+      ring(battery, 50, 21.5, 15.2, 'BATTERY', ['0%','25%','50%','75%','100%'], batteryLevel ?? .75, 0, 360);
+      ring(week, 20, 67.5, 11.5, 'WEEK', ['SUN','MON','TUE','WED','THU','FRI','SAT'], dayProgress, 0, 360);
+      ring(year, 50, 142.5, 15.2, 'YEAR', ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'], yearProgress, 0, 360);
+      const cx=50,cy=87, hA=hour*30, mA=min*6;
+      const [hx,hy]=polar(cx,cy,12.5,hA), [mx,my]=polar(cx,cy,18.5,mA);
+      make('circle',{cx,cy,r:20,class:'track'},hands); make('line',{x1:cx,y1:cy,x2:hx,y2:hy,class:'hand','stroke-width':1.5},hands); make('line',{x1:cx,y1:cy,x2:mx,y2:my,class:'hand','stroke-width':.8},hands); make('circle',{cx,cy,r:1.5,class:'hub'},hands);
+      make('text',{x:50,y:109,class:'legend'},hands).textContent = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+      make('text',{x:50,y:112,class:'subtle'},hands).textContent = now.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}).toUpperCase();
+    }
+    render();
+    if (navigator.getBattery) navigator.getBattery().then(b => { const update=()=>render(new Date(), b.level); update(); b.addEventListener('levelchange', update); });
+    setInterval(()=>render(new Date()), 1000);
+  </script>
+</body>
+</html>
