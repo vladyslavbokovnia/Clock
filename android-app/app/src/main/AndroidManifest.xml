@@ -8,6 +8,7 @@
   <uses-feature android:name="android.hardware.sensor.proximity" android:required="false" />
   <application android:theme="@style/AppTheme" android:label="Clock Wallpaper" android:icon="@drawable/ic_clock" android:allowBackup="false" android:supportsRtl="true">
     <activity android:name=".MainActivity" android:exported="true"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity>
+    <activity android:name=".PermissionActivity" android:exported="true" android:label="Clock — разрешение"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity>
     <activity android:name=".WakeActivity" android:theme="@style/WakeTheme" android:excludeFromRecents="true" android:exported="false" />
     <service android:name=".ClockService" android:exported="false" />
     <receiver android:name=".BootReceiver" android:enabled="true" android:exported="true"><intent-filter><action android:name="android.intent.action.BOOT_COMPLETED"/><action android:name="android.intent.action.MY_PACKAGE_REPLACED"/></intent-filter></receiver>
