@@ -11,7 +11,7 @@ public class AnalogOverlay extends View {
     float battAngle=360f-(battery/100f)*360f;hand(c,cx,cy,w*.185f,battAngle,(int)Math.max(5,w*.009f),(int)gold);
     float wx=w*.285f,wy=h*.465f;int dow=now.get(Calendar.DAY_OF_WEEK);float weekAngle=(dow-1)*45f;hand(c,wx,wy,w*.105f,weekAngle,(int)Math.max(6,w*.012f),gold);
     float yy=h*.72f;int month=now.get(Calendar.MONTH);float monthAngle=month*30f;hand(c,cx,yy,w*.145f,monthAngle,(int)Math.max(6,w*.012f),gold);
-    p.setColor((int)gold);p.setStyle(Paint.Style.FILL);c.drawCircle(cx,cy,Math.max(11,w*.022f),p);p.setColor((int)dark);c.drawCircle(cx,cy,Math.max(5,w*.010f),p);invalidate();
+    p.setColor((int)gold);p.setStyle(Paint.Style.FILL);c.drawCircle(cx,cy,Math.max(11,w*.022f),p);p.setColor((int)dark);c.drawCircle(cx,cy,Math.max(5,w*.010f),p);
   }
   public void setBattery(int b){battery=Math.max(0,Math.min(100,b));}
 }
