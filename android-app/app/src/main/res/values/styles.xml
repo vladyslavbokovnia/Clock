@@ -1,0 +1,11 @@
+<resources>
+  <style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
+    <item name="android:fontFamily">sans</item><item name="android:colorAccent">#9b5d22</item>
+    <item name="android:navigationBarColor">#000000</item><item name="android:windowLightStatusBar">false</item>
+  </style>
+  <style name="WakeTheme" parent="android:style/Theme.Material.NoActionBar">
+    <item name="android:windowIsTranslucent">true</item><item name="android:windowBackground">@android:color/transparent</item>
+    <item name="android:windowNoTitle">true</item><item name="android:colorAccent">#00000000</item>
+    <item name="android:windowDisablePreview">true</item>
+  </style>
+</resources>
