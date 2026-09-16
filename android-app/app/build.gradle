@@ -1,5 +1,5 @@
 plugins { id 'com.android.application' }
 
 android { namespace 'com.clock.wallpaper'; compileSdk 35
-    defaultConfig { applicationId 'com.clock.wallpaper'; minSdk 23; targetSdk 30; versionCode 1; versionName '1.0' }
+    defaultConfig { applicationId 'com.clock.standalone'; minSdk 23; targetSdk 30; versionCode 1; versionName '1.0-standalone' }
 }
