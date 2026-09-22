@@ -30,9 +30,6 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Accept licenses
-        run: yes | sdkmanager --licenses >/dev/null || true
-
       - name: Make Gradle executable
         run: chmod +x ./gradlew
 
